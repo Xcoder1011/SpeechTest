@@ -9,10 +9,14 @@
 import UIKit
 import Speech
 
-// 图灵： 480ffd93a93441aba6f66f029287a314
-class SpeechViewController: UIViewController {
+struct Key {
+    struct Turing {
+        static let api = "http://openapi.tuling123.com/openapi/api/v2"
+        static let apiKey = "480ffd93a93441aba6f66f029287a314" // 图灵
+    }
+}
 
-    let api = "http://openapi.tuling123.com/openapi/api/v2"
+class SpeechViewController: UIViewController {
     
     @IBOutlet weak var speakBtn: UIButton!
     @IBOutlet weak var tableView: UITableView!
@@ -63,6 +67,76 @@ class SpeechViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
+    func requestTuringRot(string: String) {
+        
+        let param = ["userInfo":["apiKey":Key.Turing.apiKey,
+                                 "userId":99],
+                     "perception":["inputText":["text":string]],
+                     "reqType":0] as [String : Any]
+        
+        let paramstring = jsonStringFromDictionary(param)
+        let config = URLSessionConfiguration.default
+        var request = URLRequest.init(url: URL(string: Key.Turing.api)!)
+        request.httpMethod = "POST"
+        request.httpBody = paramstring.data(using: .utf8)
+        
+        let session = URLSession.init(configuration: config)
+        let task = session.dataTask(with: request) { (data, response, error) in
+          
+            if let rootdic = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) {
+                
+                print("rootdic = \(rootdic)")
+            }
+        }
+        task.resume()
+        
+        /*
+        dic = {
+            emotion =     {
+                robotEmotion =         {
+                    a = 0;
+                    d = 0;
+                    emotionId = 0;
+                    p = 0;
+                };
+                userEmotion =         {
+                    a = 0;
+                    d = 0;
+                    emotionId = 21500;
+                    p = 0;
+                };
+            };
+            intent =     {
+                actionName = "";
+                code = 10004;
+                intentName = "";
+            };
+            results =     (
+                {
+                    groupType = 1;
+                    resultType = text;
+                    values =             {
+                        text = "\U6211\U5728\U5077\U5077\U7684\U60f3\U4f60\U6ca1\U53d1\U73b0\U5417\Uff1f";
+                    };
+                }
+            );
+        }
+       
+   */
+    }
+    
+    func jsonStringFromDictionary( _ dic: Dictionary<String, Any>) -> String {
+        
+        if (!JSONSerialization.isValidJSONObject(dic)) {
+            print("无法解析出JSONString")
+            return ""
+        }
+        
+        let data = try? JSONSerialization.data(withJSONObject: dic, options: .prettyPrinted)
+        let string = String.init(data: data!, encoding: .utf8)
+        return string!
+    }
+ 
     
     /// speak按钮点击
     @IBAction func speakBtnClicked(_ sender: UIButton) {
@@ -164,14 +238,15 @@ extension SpeechViewController : SFSpeechRecognizerDelegate {
         
         recognitionTask = recognizer?.recognitionTask(with: recognitionRequest, resultHandler: { (recognitionResult, error) in
           
-            //print(recognitionResult?.bestTranscription.formattedString as Any)
             var isFinal = false
             if recognitionResult != nil {
                 isFinal = (recognitionResult?.isFinal)!
                 if isFinal {
-                    self.dataArray.add(recognitionResult?.bestTranscription.formattedString as Any)
+                    let string = recognitionResult?.bestTranscription.formattedString
+                    self.dataArray.add(string as Any)
                     self.tableView.insertRows(at: [IndexPath(row: self.dataArray.count - 1, section: 0)], with: UITableViewRowAnimation.left)
                     self.tableView.scrollToRow(at: IndexPath(row: self.dataArray.count - 1, section: 0), at: UITableViewScrollPosition.bottom, animated: true)
+                    self.requestTuringRot(string: string!)
                 }
             }
             
@@ -184,7 +259,7 @@ extension SpeechViewController : SFSpeechRecognizerDelegate {
             }
         })
         
-        let recordingFormat = inputNode.outputFormat(forBus: 0)  //11
+        let recordingFormat = inputNode.outputFormat(forBus: 0)
         //在添加tap之前先移除上一个 否则可能报"*** Terminating app due to uncaught exception 'com.apple.coreaudio.avfaudio', reason: 'required condition is false: nullptr == Tap()"之类的错误
         inputNode .removeTap(onBus: 0)
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { [weak self] (buffer, when) in
@@ -196,7 +271,7 @@ extension SpeechViewController : SFSpeechRecognizerDelegate {
             audioBufferRequest?.endAudio()
         }
         
-        audioEngine.prepare()  //12
+        audioEngine.prepare()
         do {
             try audioEngine.start()
         } catch {
