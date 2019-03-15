@@ -12,6 +12,8 @@
 		BC0AE4782239224C00A9BE65 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC0AE4762239224C00A9BE65 /* Main.storyboard */; };
 		BC0AE47A2239224E00A9BE65 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC0AE4792239224E00A9BE65 /* Assets.xcassets */; };
 		BC0AE47D2239224E00A9BE65 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC0AE47B2239224E00A9BE65 /* LaunchScreen.storyboard */; };
+		BC0AE48622392E6200A9BE65 /* SpeechViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0AE48522392E6200A9BE65 /* SpeechViewController.swift */; };
+		BC0AE488223936F700A9BE65 /* SpeechViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0AE487223936F700A9BE65 /* SpeechViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +24,8 @@
 		BC0AE4792239224E00A9BE65 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BC0AE47C2239224E00A9BE65 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BC0AE47E2239224E00A9BE65 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BC0AE48522392E6200A9BE65 /* SpeechViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechViewController.swift; sourceTree = "<group>"; };
+		BC0AE487223936F700A9BE65 /* SpeechViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +58,7 @@
 		BC0AE4712239224C00A9BE65 /* SpeechTest */ = {
 			isa = PBXGroup;
 			children = (
+				BC0AE4842239247300A9BE65 /* Speech */,
 				BC0AE4722239224C00A9BE65 /* AppDelegate.swift */,
 				BC0AE4742239224C00A9BE65 /* ViewController.swift */,
 				BC0AE4762239224C00A9BE65 /* Main.storyboard */,
@@ -62,6 +67,15 @@
 				BC0AE47E2239224E00A9BE65 /* Info.plist */,
 			);
 			path = SpeechTest;
+			sourceTree = "<group>";
+		};
+		BC0AE4842239247300A9BE65 /* Speech */ = {
+			isa = PBXGroup;
+			children = (
+				BC0AE48522392E6200A9BE65 /* SpeechViewController.swift */,
+				BC0AE487223936F700A9BE65 /* SpeechViewCell.swift */,
+			);
+			path = Speech;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -136,6 +150,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC0AE4752239224C00A9BE65 /* ViewController.swift in Sources */,
+				BC0AE48622392E6200A9BE65 /* SpeechViewController.swift in Sources */,
+				BC0AE488223936F700A9BE65 /* SpeechViewCell.swift in Sources */,
 				BC0AE4732239224C00A9BE65 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -280,14 +296,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer: RuiPing Lin (3Y9BSC2TPE)";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = UF53LK3476;
 				INFOPLIST_FILE = SpeechTest/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = wushangkun.SpeechTest;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wushangkun.SpeechTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "571249d6-2537-42d1-b5e6-8a5f5d8dd57b";
+				PROVISIONING_PROFILE_SPECIFIER = OwenLin_Dev;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -297,14 +318,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer: RuiPing Lin (3Y9BSC2TPE)";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = UF53LK3476;
 				INFOPLIST_FILE = SpeechTest/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = wushangkun.SpeechTest;
+				PRODUCT_BUNDLE_IDENTIFIER = com.wushangkun.SpeechTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "571249d6-2537-42d1-b5e6-8a5f5d8dd57b";
+				PROVISIONING_PROFILE_SPECIFIER = OwenLin_Dev;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
