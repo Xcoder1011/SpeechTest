@@ -8,6 +8,8 @@
 
 import UIKit
 import Speech
+import SwiftyJSON
+
 
 struct Key {
     struct Turing {
@@ -82,10 +84,12 @@ class SpeechViewController: UIViewController {
         
         let session = URLSession.init(configuration: config)
         let task = session.dataTask(with: request) { (data, response, error) in
-          
-            if let rootdic = try? JSONSerialization.jsonObject(with: data!, options: .mutableContainers) {
-                
-                print("rootdic = \(rootdic)")
+            
+            let dataResult = JSON(data as Any)
+            // print("dic = \(dataResult)")
+            if let text = dataResult["results"][0]["values"]["text"].string {
+                print("text = \(text)" )
+                self.appendString(text)
             }
         }
         task.resume()
@@ -136,7 +140,16 @@ class SpeechViewController: UIViewController {
         let string = String.init(data: data!, encoding: .utf8)
         return string!
     }
- 
+    
+    func appendString( _ string: String) {
+        
+        OperationQueue.main.addOperation {
+            self.dataArray.add(string as Any)
+            self.tableView.insertRows(at: [IndexPath(row: self.dataArray.count - 1, section: 0)], with: UITableViewRowAnimation.left)
+            self.tableView.scrollToRow(at: IndexPath(row: self.dataArray.count - 1, section: 0), at: UITableViewScrollPosition.bottom, animated: true)
+        }
+    }
+    
     
     /// speak按钮点击
     @IBAction func speakBtnClicked(_ sender: UIButton) {
@@ -243,9 +256,7 @@ extension SpeechViewController : SFSpeechRecognizerDelegate {
                 isFinal = (recognitionResult?.isFinal)!
                 if isFinal {
                     let string = recognitionResult?.bestTranscription.formattedString
-                    self.dataArray.add(string as Any)
-                    self.tableView.insertRows(at: [IndexPath(row: self.dataArray.count - 1, section: 0)], with: UITableViewRowAnimation.left)
-                    self.tableView.scrollToRow(at: IndexPath(row: self.dataArray.count - 1, section: 0), at: UITableViewScrollPosition.bottom, animated: true)
+                    self.appendString(string!)
                     self.requestTuringRot(string: string!)
                 }
             }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		455BFCEB3E2F6B821310E642 /* Pods_SpeechTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B50F65A2EEFF21EC98F4CCB2 /* Pods_SpeechTest.framework */; };
 		BC0AE4732239224C00A9BE65 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0AE4722239224C00A9BE65 /* AppDelegate.swift */; };
 		BC0AE4752239224C00A9BE65 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0AE4742239224C00A9BE65 /* ViewController.swift */; };
 		BC0AE4782239224C00A9BE65 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC0AE4762239224C00A9BE65 /* Main.storyboard */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B50F65A2EEFF21EC98F4CCB2 /* Pods_SpeechTest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SpeechTest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC0AE46F2239224C00A9BE65 /* SpeechTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpeechTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC0AE4722239224C00A9BE65 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BC0AE4742239224C00A9BE65 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -26,6 +28,8 @@
 		BC0AE47E2239224E00A9BE65 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BC0AE48522392E6200A9BE65 /* SpeechViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechViewController.swift; sourceTree = "<group>"; };
 		BC0AE487223936F700A9BE65 /* SpeechViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechViewCell.swift; sourceTree = "<group>"; };
+		ECFFCBB0715569C6C6727273 /* Pods-SpeechTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SpeechTest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SpeechTest/Pods-SpeechTest.debug.xcconfig"; sourceTree = "<group>"; };
+		EDF9ADB3F3C850BD65B5D354 /* Pods-SpeechTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SpeechTest.release.xcconfig"; path = "Pods/Target Support Files/Pods-SpeechTest/Pods-SpeechTest.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,17 +37,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				455BFCEB3E2F6B821310E642 /* Pods_SpeechTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		15AC20F8027E98E1B626065A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B50F65A2EEFF21EC98F4CCB2 /* Pods_SpeechTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		73CAA3D96A4403074A6DBB4A /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				ECFFCBB0715569C6C6727273 /* Pods-SpeechTest.debug.xcconfig */,
+				EDF9ADB3F3C850BD65B5D354 /* Pods-SpeechTest.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		BC0AE4662239224C00A9BE65 = {
 			isa = PBXGroup;
 			children = (
 				BC0AE4712239224C00A9BE65 /* SpeechTest */,
 				BC0AE4702239224C00A9BE65 /* Products */,
+				73CAA3D96A4403074A6DBB4A /* Pods */,
+				15AC20F8027E98E1B626065A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -85,9 +109,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BC0AE4812239224E00A9BE65 /* Build configuration list for PBXNativeTarget "SpeechTest" */;
 			buildPhases = (
+				1DB19AF1CE9647316F4103A3 /* [CP] Check Pods Manifest.lock */,
 				BC0AE46B2239224C00A9BE65 /* Sources */,
 				BC0AE46C2239224C00A9BE65 /* Frameworks */,
 				BC0AE46D2239224C00A9BE65 /* Resources */,
+				963D843600E90DE7C25D7EC5 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -143,6 +169,59 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1DB19AF1CE9647316F4103A3 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SpeechTest-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		963D843600E90DE7C25D7EC5 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-SpeechTest/Pods-SpeechTest-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Moya/Moya.framework",
+				"${BUILT_PRODUCTS_DIR}/Result/Result.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Moya.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Result.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SpeechTest/Pods-SpeechTest-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BC0AE46B2239224C00A9BE65 /* Sources */ = {
@@ -294,6 +373,7 @@
 		};
 		BC0AE4822239224E00A9BE65 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = ECFFCBB0715569C6C6727273 /* Pods-SpeechTest.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: RuiPing Lin (3Y9BSC2TPE)";
@@ -316,6 +396,7 @@
 		};
 		BC0AE4832239224E00A9BE65 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EDF9ADB3F3C850BD65B5D354 /* Pods-SpeechTest.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: RuiPing Lin (3Y9BSC2TPE)";
