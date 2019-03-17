@@ -8,8 +8,25 @@
 
 import UIKit
 
-class SpeechViewMyCell: UITableViewCell {
 
+class SpeechContentCell: UITableViewCell {
+    
+    var content: Content?
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
+    }
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+    }
+    
+}
+
+class SpeechViewMyCell: SpeechContentCell {
+
+    @IBOutlet weak var contenLabel: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -17,14 +34,17 @@ class SpeechViewMyCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    }
+    
+    override var content: Content? {
+        didSet {
+            self.contenLabel.text = content?.string
+        }
     }
 
 }
 
-
-class SpeechViewYouCell: UITableViewCell {
+class SpeechViewYouCell: SpeechContentCell {
     
     @IBOutlet weak var contentLabel: UILabel!
     
@@ -35,7 +55,11 @@ class SpeechViewYouCell: UITableViewCell {
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        
-        // Configure the view for the selected state
+    }
+    
+    override var content: Content? {
+        didSet {
+            self.contentLabel.text = content?.string
+        }
     }
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="4A7-TY-j5a">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="4A7-TY-j5a">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -59,9 +59,9 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hCd-lG-oxF">
-                                                    <rect key="frame" x="10" y="10" width="315" height="72"/>
+                                                    <rect key="frame" x="15" y="10" width="320" height="72"/>
                                                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="30"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="28"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -70,13 +70,41 @@
                                             <constraints>
                                                 <constraint firstItem="hCd-lG-oxF" firstAttribute="top" secondItem="Q6h-hT-niN" secondAttribute="top" constant="10" id="4Ee-fU-oSj"/>
                                                 <constraint firstAttribute="bottom" secondItem="hCd-lG-oxF" secondAttribute="bottom" constant="20" id="gmh-uw-NkZ"/>
-                                                <constraint firstItem="hCd-lG-oxF" firstAttribute="leading" secondItem="Q6h-hT-niN" secondAttribute="leading" constant="10" id="hY5-sx-osy"/>
-                                                <constraint firstAttribute="trailing" secondItem="hCd-lG-oxF" secondAttribute="trailing" constant="50" id="vtC-t3-8U6"/>
+                                                <constraint firstItem="hCd-lG-oxF" firstAttribute="leading" secondItem="Q6h-hT-niN" secondAttribute="leading" constant="15" id="hY5-sx-osy"/>
+                                                <constraint firstAttribute="trailing" secondItem="hCd-lG-oxF" secondAttribute="trailing" constant="40" id="vtC-t3-8U6"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <connections>
                                             <outlet property="contentLabel" destination="hCd-lG-oxF" id="f3a-bp-seO"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="SpeechViewMyCell" rowHeight="102" id="gNb-bQ-T8a" customClass="SpeechViewMyCell" customModule="SpeechTest" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="130" width="375" height="102"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="gNb-bQ-T8a" id="VgN-EE-fJ4">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="102"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ouc-Sf-LLR">
+                                                    <rect key="frame" x="50" y="10" width="315" height="72"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="24"/>
+                                                    <color key="textColor" white="1" alpha="0.59931506849315064" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="ouc-Sf-LLR" secondAttribute="bottom" constant="20" id="USU-Nc-CAj"/>
+                                                <constraint firstItem="ouc-Sf-LLR" firstAttribute="top" secondItem="VgN-EE-fJ4" secondAttribute="top" constant="10" id="eOK-wr-6qh"/>
+                                                <constraint firstItem="ouc-Sf-LLR" firstAttribute="leading" secondItem="VgN-EE-fJ4" secondAttribute="leading" constant="50" id="oy6-Ex-E6V"/>
+                                                <constraint firstAttribute="trailing" secondItem="ouc-Sf-LLR" secondAttribute="trailing" constant="10" id="zdN-Wo-U5o"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <connections>
+                                            <outlet property="contenLabel" destination="ouc-Sf-LLR" id="fcy-g9-9eW"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>

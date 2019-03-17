@@ -9,12 +9,26 @@
 import UIKit
 import Speech
 import SwiftyJSON
-
+import AVFoundation
 
 struct Key {
     struct Turing {
         static let api = "http://openapi.tuling123.com/openapi/api/v2"
         static let apiKey = "480ffd93a93441aba6f66f029287a314" // 图灵
+    }
+}
+
+enum ContentType:Int {
+    case Your
+    case Mine
+}
+
+class Content  {
+    var string: String?
+    var contentType: ContentType = .Mine
+    init(string: String, contentType: ContentType) {
+        self.string = string
+        self.contentType = contentType
     }
 }
 
@@ -24,7 +38,6 @@ class SpeechViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     lazy var dataArray = NSMutableArray()
-    lazy var dataArray1 = []
 
     // 创建与用户的默认语言设置关联的语音识别器。
     // var recognizer = SFSpeechRecognizer.init()
@@ -34,6 +47,14 @@ class SpeechViewController: UIViewController {
     private var audioBufferRequest : SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask : SFSpeechRecognitionTask?
 
+    /// 语音合成
+    lazy private var speechSynthesizer: AVSpeechSynthesizer = {
+        let synthesizer = AVSpeechSynthesizer()
+        synthesizer.delegate = self
+        return synthesizer
+    }()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.estimatedRowHeight = 80
@@ -89,7 +110,7 @@ class SpeechViewController: UIViewController {
             // print("dic = \(dataResult)")
             if let text = dataResult["results"][0]["values"]["text"].string {
                 print("text = \(text)" )
-                self.appendString(text)
+                self.appendString(text, contentType: .Your)
             }
         }
         task.resume()
@@ -141,12 +162,49 @@ class SpeechViewController: UIViewController {
         return string!
     }
     
-    func appendString( _ string: String) {
+    func appendString( _ string: String, contentType: ContentType) {
         
         OperationQueue.main.addOperation {
-            self.dataArray.add(string as Any)
-            self.tableView.insertRows(at: [IndexPath(row: self.dataArray.count - 1, section: 0)], with: UITableViewRowAnimation.left)
+            
+            guard !string.isEmpty else { return }
+            let mode = Content(string: string, contentType: contentType)
+            mode.contentType = contentType
+            mode.string = string
+            self.dataArray.add(mode)
+            self.tableView.insertRows(at: [IndexPath(row: self.dataArray.count - 1, section: 0)], with: UITableViewRowAnimation.fade)
             self.tableView.scrollToRow(at: IndexPath(row: self.dataArray.count - 1, section: 0), at: UITableViewScrollPosition.bottom, animated: true)
+            
+            if contentType == .Your {
+                self.text_to_speech(string)
+            }
+        }
+    }
+    
+    func text_to_speech( _ string: String) {
+        
+        /*
+         let audioSession = AVAudioSession.sharedInstance()
+         do {
+         try audioSession.setCategory(AVAudioSessionCategoryPlayback)
+         } catch  {
+         print("audioSession can not setted.")
+         } */
+        
+        if self.speechSynthesizer.isPaused {
+            self.speechSynthesizer.continueSpeaking()
+        } else if self.speechSynthesizer.isSpeaking {
+            self.speechSynthesizer.pauseSpeaking(at: .immediate)
+        } else {
+            let utterance = AVSpeechUtterance(string: string)
+            utterance.rate = AVSpeechUtteranceDefaultSpeechRate
+            utterance.preUtteranceDelay = 0.25
+            utterance.postUtteranceDelay = 0.25
+            utterance.voice = AVSpeechSynthesisVoice(language: "zh-CN")
+            utterance.volume = 1.0//音量
+            utterance.pitchMultiplier = 1.0
+            utterance.postUtteranceDelay = 1;
+            print("speaking string ===== \(string)")
+            self.speechSynthesizer.speak(utterance)
         }
     }
     
@@ -175,7 +233,7 @@ class SpeechViewController: UIViewController {
     }
 }
 
-extension SpeechViewController : SFSpeechRecognizerDelegate {
+extension SpeechViewController: SFSpeechRecognizerDelegate {
     
     //MARK:  请求语音识别权限
     func requestAuthorization() {
@@ -231,7 +289,7 @@ extension SpeechViewController : SFSpeechRecognizerDelegate {
         let audioSession = AVAudioSession.sharedInstance()
         
         do {
-            try audioSession.setCategory(AVAudioSessionCategoryRecord)
+            try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord)
             try audioSession.setMode(AVAudioSessionModeMeasurement)
             try audioSession.setActive(true, with: .notifyOthersOnDeactivation)
                     
@@ -248,7 +306,6 @@ extension SpeechViewController : SFSpeechRecognizerDelegate {
         }
         
         recognitionRequest.shouldReportPartialResults = true
-        
         recognitionTask = recognizer?.recognitionTask(with: recognitionRequest, resultHandler: { (recognitionResult, error) in
           
             var isFinal = false
@@ -256,7 +313,7 @@ extension SpeechViewController : SFSpeechRecognizerDelegate {
                 isFinal = (recognitionResult?.isFinal)!
                 if isFinal {
                     let string = recognitionResult?.bestTranscription.formattedString
-                    self.appendString(string!)
+                    self.appendString(string!, contentType: .Mine)
                     self.requestTuringRot(string: string!)
                 }
             }
@@ -288,7 +345,6 @@ extension SpeechViewController : SFSpeechRecognizerDelegate {
         } catch {
             print("audioEngine couldn't start because of an error.")
         }
-    
     }
     
     //MARK: SFSpeechRecognizerDelegate
@@ -303,18 +359,54 @@ extension SpeechViewController : SFSpeechRecognizerDelegate {
     
 }
 
-extension SpeechViewController: UITableViewDelegate, UITableViewDataSource {
+extension SpeechViewController: AVSpeechSynthesizerDelegate {
     
+    
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
+        //
+    }
+    
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+       
+        self.speechSynthesizer.stopSpeaking(at: .immediate)
+        
+    }
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didPause utterance: AVSpeechUtterance) {
+        //
+    }
+    
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didContinue utterance: AVSpeechUtterance) {
+        //
+    }
+    
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+        //
+    }
+    
+    // 监听 播放 字符范围
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, willSpeakRangeOfSpeechString characterRange: NSRange, utterance: AVSpeechUtterance) {
+        let str = (utterance.speechString as NSString).substring(with: characterRange)
+        print(str)
+    }
+}
+
+
+extension SpeechViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         return dataArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SpeechViewYouCell", for:indexPath) as! SpeechViewYouCell
-        let string = dataArray[indexPath.row] as! String
-        cell.contentLabel.text = string
+        var cell: SpeechContentCell
+        let content = dataArray[indexPath.row] as! Content
+        switch content.contentType {
+        case .Mine:
+            cell = tableView.dequeueReusableCell(withIdentifier: "SpeechViewMyCell", for:indexPath) as! SpeechViewMyCell
+        case .Your:
+            cell = tableView.dequeueReusableCell(withIdentifier: "SpeechViewYouCell", for:indexPath) as! SpeechViewYouCell
+        }
+        cell.content = content
         return cell
     }
     
