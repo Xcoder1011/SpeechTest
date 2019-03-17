@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2vo-1t-YRo">
-                                <rect key="frame" x="0.0" y="607" width="375" height="60"/>
+                                <rect key="frame" x="0.0" y="587" width="375" height="60"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nta-Ww-HHS">
                                         <rect key="frame" x="1" y="1" width="373" height="58"/>
@@ -48,7 +48,7 @@
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ydI-aD-MCH">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="607"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="547"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="SpeechViewYouCell" rowHeight="102" id="7hm-bk-WRO" customClass="SpeechViewYouCell" customModule="SpeechTest" customModuleProvider="target">
@@ -118,9 +118,9 @@
                         <constraints>
                             <constraint firstItem="ydI-aD-MCH" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="A0J-bC-MbS"/>
                             <constraint firstItem="ydI-aD-MCH" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="BMi-9b-rmz"/>
-                            <constraint firstAttribute="bottom" secondItem="2vo-1t-YRo" secondAttribute="bottom" id="QVN-Wl-uki"/>
+                            <constraint firstAttribute="bottom" secondItem="2vo-1t-YRo" secondAttribute="bottom" constant="20" id="QVN-Wl-uki"/>
                             <constraint firstItem="2vo-1t-YRo" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="ReY-h0-43d"/>
-                            <constraint firstItem="2vo-1t-YRo" firstAttribute="top" secondItem="ydI-aD-MCH" secondAttribute="bottom" id="UsZ-LR-tis"/>
+                            <constraint firstItem="2vo-1t-YRo" firstAttribute="top" secondItem="ydI-aD-MCH" secondAttribute="bottom" constant="40" id="UsZ-LR-tis"/>
                             <constraint firstItem="2vo-1t-YRo" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="apJ-MR-cuG"/>
                             <constraint firstItem="ydI-aD-MCH" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="bo8-KA-ce2"/>
                         </constraints>

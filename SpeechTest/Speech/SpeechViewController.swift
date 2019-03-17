@@ -14,7 +14,8 @@ import AVFoundation
 struct Key {
     struct Turing {
         static let api = "http://openapi.tuling123.com/openapi/api/v2"
-        static let apiKey = "480ffd93a93441aba6f66f029287a314" // 图灵
+        // static let apiKey = "480ffd93a93441aba6f66f029287a314" // 图灵
+        static let apiKey = "6cc5357b84ce5bf24a784370fb491557"
     }
 }
 
@@ -39,8 +40,6 @@ class SpeechViewController: UIViewController {
     
     lazy var dataArray = NSMutableArray()
 
-    // 创建与用户的默认语言设置关联的语音识别器。
-    // var recognizer = SFSpeechRecognizer.init()
     // 创建与指定区域设置关联的语音识别器。 , zh-CN，en-US
     private let recognizer = SFSpeechRecognizer.init(locale: Locale.init(identifier: "zh-CN"))
     private let audioEngine = AVAudioEngine()
@@ -54,7 +53,6 @@ class SpeechViewController: UIViewController {
         return synthesizer
     }()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.estimatedRowHeight = 80
@@ -64,13 +62,16 @@ class SpeechViewController: UIViewController {
         for value in SFSpeechRecognizer.supportedLocales() {
             print(value.description)
         }
-        //  监视语音识别服务可用性的更改
-        recognizer?.delegate = self
+        self.speakBtn.isEnabled = false
+        //  监控语音识别服务的可用性
+        // recognizer?.defaultTaskHint =
+     
         tableView.reloadData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        recognizer?.delegate = self
         requestAuthorization()
     }
     
@@ -171,7 +172,7 @@ class SpeechViewController: UIViewController {
             mode.contentType = contentType
             mode.string = string
             self.dataArray.add(mode)
-            self.tableView.insertRows(at: [IndexPath(row: self.dataArray.count - 1, section: 0)], with: UITableViewRowAnimation.fade)
+            self.tableView.insertRows(at: [IndexPath(row: self.dataArray.count - 1, section: 0)], with: contentType == .Mine ? .fade : .left)
             self.tableView.scrollToRow(at: IndexPath(row: self.dataArray.count - 1, section: 0), at: UITableViewScrollPosition.bottom, animated: true)
             
             if contentType == .Your {
@@ -220,8 +221,9 @@ class SpeechViewController: UIViewController {
                 audioBufferRequest?.endAudio()
                 sender.isSelected = false
             } else {
-                startRecording()
+               try! startRecording()
             }
+            
         } else {
             print("停止说话，回到默认")
             if audioEngine.isRunning {
@@ -235,7 +237,7 @@ class SpeechViewController: UIViewController {
 
 extension SpeechViewController: SFSpeechRecognizerDelegate {
     
-    //MARK:  请求语音识别权限
+    // MARK: 请求语音识别权限
     func requestAuthorization() {
         
         SFSpeechRecognizer.requestAuthorization { (status) in
@@ -279,50 +281,50 @@ extension SpeechViewController: SFSpeechRecognizerDelegate {
     }
     
     
-    func startRecording() {
+    func startRecording() throws {
     
-        if recognitionTask != nil {
-            recognitionTask?.cancel()
-            recognitionTask = nil
+    
+        if let recognitionTask = recognitionTask {
+            recognitionTask.cancel()
+            self.recognitionTask = nil
         }
       
+        // do - catch
+
         let audioSession = AVAudioSession.sharedInstance()
+        try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord) // AVAudioSessionCategoryRecord
+        try audioSession.setMode(AVAudioSessionModeMeasurement)
+        try audioSession.setActive(true, with: .notifyOthersOnDeactivation)
         
-        do {
-            try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord)
-            try audioSession.setMode(AVAudioSessionModeMeasurement)
-            try audioSession.setActive(true, with: .notifyOthersOnDeactivation)
-                    
-        } catch  {
-            print("audioSession can not setted.")
-        }
-        
+        let inputNode:AVAudioInputNode = audioEngine.inputNode
+
         audioBufferRequest = SFSpeechAudioBufferRecognitionRequest()
 
-        let inputNode:AVAudioInputNode = audioEngine.inputNode
-        
-        guard let recognitionRequest = audioBufferRequest else {
-            fatalError("can not create SFSpeechAudioBufferRecognitionRequest")
-        }
-        
+        guard let recognitionRequest = audioBufferRequest else { fatalError("Unable to created a SFSpeechAudioBufferRecognitionRequest object") }
+       
+        // 设置在音频录制完成之前返回结果
         recognitionRequest.shouldReportPartialResults = true
+        
+        // 保留对该任务的引用，以便取消该任务。
         recognitionTask = recognizer?.recognitionTask(with: recognitionRequest, resultHandler: { (recognitionResult, error) in
-          
             var isFinal = false
-            if recognitionResult != nil {
-                isFinal = (recognitionResult?.isFinal)!
+            
+            if let result = recognitionResult {
+                isFinal = result.isFinal
                 if isFinal {
-                    let string = recognitionResult?.bestTranscription.formattedString
-                    self.appendString(string!, contentType: .Mine)
-                    self.requestTuringRot(string: string!)
+                    let string = result.bestTranscription.formattedString
+                    self.appendString(string, contentType: .Mine)
+                    self.requestTuringRot(string: string)
                 }
             }
             
             if error != nil || isFinal {
                 self.audioEngine.stop()
                 inputNode.removeTap(onBus: 0)
+                
                 self.audioBufferRequest = nil
                 self.recognitionTask = nil
+                
                 self.speakBtn.isSelected = false
             }
         })
@@ -330,7 +332,7 @@ extension SpeechViewController: SFSpeechRecognizerDelegate {
         let recordingFormat = inputNode.outputFormat(forBus: 0)
         //在添加tap之前先移除上一个 否则可能报"*** Terminating app due to uncaught exception 'com.apple.coreaudio.avfaudio', reason: 'required condition is false: nullptr == Tap()"之类的错误
         inputNode .removeTap(onBus: 0)
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { [weak self] (buffer, when) in
+        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { [weak self] (buffer:AVAudioPCMBuffer, when: AVAudioTime) in
             self?.audioBufferRequest?.append(buffer)
         }
         
@@ -340,17 +342,16 @@ extension SpeechViewController: SFSpeechRecognizerDelegate {
         }
         
         audioEngine.prepare()
-        do {
-            try audioEngine.start()
-        } catch {
-            print("audioEngine couldn't start because of an error.")
-        }
+        
+        try audioEngine.start()
+      
     }
     
-    //MARK: SFSpeechRecognizerDelegate
+    // MARK: SFSpeechRecognizerDelegate
+    // 监控语音识别的可用性
     func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {
         print("availabilityDidChange = \(available)")
-        if available {
+        if available { //available: 指示语音识别器当前是否可用。
             self.speakBtn.isEnabled = true
         } else {
             self.speakBtn.isEnabled = false
