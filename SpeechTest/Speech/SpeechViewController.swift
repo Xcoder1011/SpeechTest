@@ -227,7 +227,7 @@ class SpeechViewController: UIViewController {
     }
 }
 
-extension SpeechViewController: SFSpeechRecognizerDelegate {
+extension SpeechViewController: SFSpeechRecognizerDelegate,SFSpeechRecognitionTaskDelegate {
     
     // MARK: 请求语音识别权限
     func requestAuthorization() {
@@ -304,30 +304,33 @@ extension SpeechViewController: SFSpeechRecognizerDelegate {
         // 设置在音频录制完成之前返回结果
         // 每产生一种结果就马上返回
         recognitionRequest.shouldReportPartialResults = true
+        recognitionRequest.interactionIdentifier = "向左转弯"
+        
         
         // 保留对该任务的引用，以便取消该任务。
-        recognitionTask = recognizer?.recognitionTask(with: recognitionRequest, resultHandler: { (recognitionResult, error) in
-            var isFinal = false
-            if let result = recognitionResult {
-                isFinal = result.isFinal
-                if isFinal {
-                    let string = result.bestTranscription.formattedString  // 语音转换后的信息类
-                    self.appendString(string, contentType: .Mine)
-                    self.requestTuringRot(string: string)
-                }
-            }
-            
-            if error != nil || isFinal {
-                self.audioEngine.stop()
-                inputNode.removeTap(onBus: 0)
-                
-                self.audioBufferRequest = nil
-                self.recognitionTask = nil
-                
-                self.speakBtn.isSelected = false
-            }
-        })
+//        recognitionTask = recognizer?.recognitionTask(with: recognitionRequest, resultHandler: { (recognitionResult, error) in
+//            var isFinal = false
+//            if let result = recognitionResult {
+//                isFinal = result.isFinal
+//                if isFinal {
+//                    let string = result.bestTranscription.formattedString  // 语音转换后的信息类
+//                    self.appendString(string, contentType: .Mine)
+//                    self.requestTuringRot(string: string)
+//                }
+//            }
+//
+//            if error != nil || isFinal {
+//                self.audioEngine.stop()
+//                inputNode.removeTap(onBus: 0)
+//
+//                self.audioBufferRequest = nil
+//                self.recognitionTask = nil
+//
+//                self.speakBtn.isSelected = false
+//            }
+//        })
         
+      recognitionTask = recognizer?.recognitionTask(with: recognitionRequest, delegate: self)
     
         // 数字音频采样的格式
         let recordingFormat = inputNode.outputFormat(forBus: 0)
@@ -350,6 +353,7 @@ extension SpeechViewController: SFSpeechRecognizerDelegate {
     }
     
     // MARK: SFSpeechRecognizerDelegate
+    
     // 监控语音识别的可用性
     func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {
         print("availabilityDidChange = \(available)")
@@ -359,6 +363,64 @@ extension SpeechViewController: SFSpeechRecognizerDelegate {
             self.speakBtn.isEnabled = false
         }
     }
+    
+    // MARK: SFSpeechRecognitionTaskDelegate
+    
+    // 当任务首次检测到源音频中的语音时
+    func speechRecognitionDidDetectSpeech(_ task: SFSpeechRecognitionTask) {
+        
+        print("speechRecognitionDidDetectSpeech = \(task.description)")
+
+    }
+    
+    // 告诉代理该任务已被取消。
+    func speechRecognitionTaskWasCancelled(_ task: SFSpeechRecognitionTask) {
+        
+        print("speechRecognitionTaskWasCancelled = \(task.description)")
+        
+    }
+    
+    // 当任务不再接受新的音频输入时，即使最终处理正在进行，也告诉代理
+    func speechRecognitionTaskFinishedReadingAudio(_ task: SFSpeechRecognitionTask) {
+        print("speechRecognitionTaskFinishedReadingAudio = \(task.description)")
+
+    }
+    
+    // 完成对所有请求的话语的识别。
+    func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didFinishSuccessfully successfully: Bool) {
+        
+        print("didFinishSuccessfully = \(successfully)")
+    }
+    
+    // 告诉代理可以使用假设的转录。
+    // 持续回调
+    func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didHypothesizeTranscription transcription: SFTranscription) {
+        
+        print("didHypothesizeTranscription = \(transcription.formattedString)")
+    }
+    
+    // 仅为最终识别话语而调用。将不再报道关于话语的事件
+    func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didFinishRecognition recognitionResult: SFSpeechRecognitionResult) {
+       
+        print("didFinishRecognition = \(recognitionResult.bestTranscription.formattedString)")
+        let string = recognitionResult.bestTranscription.formattedString  // 语音转换后的信息类
+        self.appendString(string, contentType: .Mine)
+        self.requestTuringRot(string: string)
+    }
+    
+    /*
+    开始说话
+    didHypothesizeTranscription = 你
+    didHypothesizeTranscription = 你在
+    didHypothesizeTranscription = 你在干嘛？
+    didHypothesizeTranscription = 你在干嘛呢？
+    didHypothesizeTranscription = 你在干嘛呢？
+    停止说话，回到默认
+    speechRecognitionTaskFinishedReadingAudio = <_SFSpeechRecognitionDelegateTask: 0x60c0000ce770>
+    didHypothesizeTranscription = 你在干嘛呢？
+    didFinishRecognition = 你在干嘛呢？
+    didFinishSuccessfully = true
+    */
 }
 
 extension SpeechViewController: AVSpeechSynthesizerDelegate {
