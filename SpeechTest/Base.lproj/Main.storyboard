@@ -151,5 +151,56 @@
             </objects>
             <point key="canvasLocation" x="-183" y="133"/>
         </scene>
+        <!--View Controller-->
+        <scene sceneID="Yy7-ey-HkY">
+            <objects>
+                <viewController id="ltA-yf-AoZ" customClass="ViewController" customModule="SpeechTest" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="sWc-m8-upn">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="b0c-u9-YRk">
+                                <rect key="frame" x="15" y="80" width="345" height="464"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pso-2O-pML">
+                                <rect key="frame" x="1" y="566" width="373" height="41"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="24"/>
+                                <state key="normal" title="开始识别">
+                                    <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <state key="selected" title="正在识别">
+                                    <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="recognizeBtnDidClick:" destination="ltA-yf-AoZ" eventType="touchUpInside" id="bSq-7o-LQX"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Pso-2O-pML" firstAttribute="leading" secondItem="9Rt-xD-iH0" secondAttribute="leading" constant="1" id="3Ni-UQ-Q1O"/>
+                            <constraint firstItem="b0c-u9-YRk" firstAttribute="leading" secondItem="9Rt-xD-iH0" secondAttribute="leading" constant="15" id="Evp-OM-965"/>
+                            <constraint firstItem="9Rt-xD-iH0" firstAttribute="trailing" secondItem="Pso-2O-pML" secondAttribute="trailing" constant="1" id="GID-AF-9gh"/>
+                            <constraint firstItem="9Rt-xD-iH0" firstAttribute="bottom" secondItem="Pso-2O-pML" secondAttribute="bottom" constant="60" id="JPp-7O-r0i"/>
+                            <constraint firstItem="b0c-u9-YRk" firstAttribute="top" secondItem="9Rt-xD-iH0" secondAttribute="top" constant="60" id="VdX-TD-vDD"/>
+                            <constraint firstItem="9Rt-xD-iH0" firstAttribute="trailing" secondItem="b0c-u9-YRk" secondAttribute="trailing" constant="15" id="cpt-hc-UEt"/>
+                            <constraint firstItem="Pso-2O-pML" firstAttribute="top" secondItem="b0c-u9-YRk" secondAttribute="bottom" constant="22" id="ez7-cT-6ga"/>
+                            <constraint firstItem="9Rt-xD-iH0" firstAttribute="bottom" secondItem="Pso-2O-pML" secondAttribute="bottom" constant="60" id="kP4-xi-Hxm"/>
+                            <constraint firstItem="Pso-2O-pML" firstAttribute="centerX" secondItem="9Rt-xD-iH0" secondAttribute="centerX" id="sKO-tK-IZq"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="9Rt-xD-iH0"/>
+                    </view>
+                    <connections>
+                        <outlet property="recognizeBtn" destination="Pso-2O-pML" id="l8Y-b1-Kfa"/>
+                        <outlet property="textView" destination="b0c-u9-YRk" id="vfS-zE-5dq"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="btu-Ca-YfT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-170.40000000000001" y="859.52023988005999"/>
+        </scene>
     </scenes>
 </document>

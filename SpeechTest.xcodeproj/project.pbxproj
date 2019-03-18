@@ -15,6 +15,7 @@
 		BC0AE47D2239224E00A9BE65 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC0AE47B2239224E00A9BE65 /* LaunchScreen.storyboard */; };
 		BC0AE48622392E6200A9BE65 /* SpeechViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0AE48522392E6200A9BE65 /* SpeechViewController.swift */; };
 		BC0AE488223936F700A9BE65 /* SpeechViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0AE487223936F700A9BE65 /* SpeechViewCell.swift */; };
+		BCE66BF9223F777A00B97459 /* car_train_order.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BCE66BF8223F777A00B97459 /* car_train_order.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		BC0AE47E2239224E00A9BE65 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BC0AE48522392E6200A9BE65 /* SpeechViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechViewController.swift; sourceTree = "<group>"; };
 		BC0AE487223936F700A9BE65 /* SpeechViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechViewCell.swift; sourceTree = "<group>"; };
+		BCE66BF8223F777A00B97459 /* car_train_order.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = car_train_order.mp3; sourceTree = "<group>"; };
 		ECFFCBB0715569C6C6727273 /* Pods-SpeechTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SpeechTest.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SpeechTest/Pods-SpeechTest.debug.xcconfig"; sourceTree = "<group>"; };
 		EDF9ADB3F3C850BD65B5D354 /* Pods-SpeechTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SpeechTest.release.xcconfig"; path = "Pods/Target Support Files/Pods-SpeechTest/Pods-SpeechTest.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -96,6 +98,7 @@
 		BC0AE4842239247300A9BE65 /* Speech */ = {
 			isa = PBXGroup;
 			children = (
+				BCE66BF8223F777A00B97459 /* car_train_order.mp3 */,
 				BC0AE48522392E6200A9BE65 /* SpeechViewController.swift */,
 				BC0AE487223936F700A9BE65 /* SpeechViewCell.swift */,
 			);
@@ -165,6 +168,7 @@
 				BC0AE47D2239224E00A9BE65 /* LaunchScreen.storyboard in Resources */,
 				BC0AE47A2239224E00A9BE65 /* Assets.xcassets in Resources */,
 				BC0AE4782239224C00A9BE65 /* Main.storyboard in Resources */,
+				BCE66BF9223F777A00B97459 /* car_train_order.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -176,15 +180,11 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
 				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-SpeechTest-checkManifestLockResult.txt",
 			);
@@ -198,8 +198,6 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-SpeechTest/Pods-SpeechTest-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
@@ -208,8 +206,6 @@
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Moya.framework",

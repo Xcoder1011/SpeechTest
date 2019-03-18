@@ -42,11 +42,11 @@ class SpeechViewController: UIViewController {
 
     // 创建与指定区域设置关联的语音识别器。 , zh-CN，en-US
     private let recognizer = SFSpeechRecognizer.init(locale: Locale.init(identifier: "zh-CN"))
-    private let audioEngine = AVAudioEngine()
-    private var audioBufferRequest : SFSpeechAudioBufferRecognitionRequest?
-    private var recognitionTask : SFSpeechRecognitionTask?
+    private let audioEngine = AVAudioEngine()  // 音频引擎，用于音频输入
+    private var audioBufferRequest : SFSpeechAudioBufferRecognitionRequest? // 语音识别的请求
+    private var recognitionTask : SFSpeechRecognitionTask?  // 语音识别的task
 
-    /// 语音合成
+    /// 语音合成器
     lazy private var speechSynthesizer: AVSpeechSynthesizer = {
         let synthesizer = AVSpeechSynthesizer()
         synthesizer.delegate = self
@@ -183,27 +183,19 @@ class SpeechViewController: UIViewController {
     
     func text_to_speech( _ string: String) {
         
-        /*
-         let audioSession = AVAudioSession.sharedInstance()
-         do {
-         try audioSession.setCategory(AVAudioSessionCategoryPlayback)
-         } catch  {
-         print("audioSession can not setted.")
-         } */
-        
         if self.speechSynthesizer.isPaused {
             self.speechSynthesizer.continueSpeaking()
         } else if self.speechSynthesizer.isSpeaking {
             self.speechSynthesizer.pauseSpeaking(at: .immediate)
         } else {
+            // 声带
             let utterance = AVSpeechUtterance(string: string)
             utterance.rate = AVSpeechUtteranceDefaultSpeechRate
-            utterance.preUtteranceDelay = 0.25
-            utterance.postUtteranceDelay = 0.25
-            utterance.voice = AVSpeechSynthesisVoice(language: "zh-CN")
+            utterance.preUtteranceDelay = 0.25 // 播放当前语句前的间歇时间
+            utterance.postUtteranceDelay = 0.25 // 播放下一句的间歇时间
+            utterance.voice = AVSpeechSynthesisVoice(language: "zh-CN") // 语言的种类
             utterance.volume = 1.0//音量
-            utterance.pitchMultiplier = 1.0
-            utterance.postUtteranceDelay = 1;
+            utterance.pitchMultiplier = 1.0 // 声音的音调, 一般在[0.5 - 2]，默认值是1。
             print("speaking string ===== \(string)")
             self.speechSynthesizer.speak(utterance)
         }
@@ -288,31 +280,38 @@ extension SpeechViewController: SFSpeechRecognizerDelegate {
             recognitionTask.cancel()
             self.recognitionTask = nil
         }
+        
+       
+        guard (recognizer?.isAvailable)! else {
+            fatalError("recognizer is not available")
+        }
       
         // do - catch
 
-        let audioSession = AVAudioSession.sharedInstance()
+        let audioSession = AVAudioSession.sharedInstance() // 管理音频硬件资源的分配
         try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord) // AVAudioSessionCategoryRecord
-        try audioSession.setMode(AVAudioSessionModeMeasurement)
+        try audioSession.setMode(AVAudioSessionModeMeasurement) // 场景： 最小系统 、VoIP、 游戏录制、录制视频、视频播放、视频通话
+        try audioSession.setCategory(AVAudioSessionCategoryPlayback, with: .mixWithOthers)
         try audioSession.setActive(true, with: .notifyOthersOnDeactivation)
         
-        let inputNode:AVAudioInputNode = audioEngine.inputNode
+        // inputNode、outputNode分别对应硬件的麦克风和扬声器
+        let inputNode:AVAudioInputNode = audioEngine.inputNode  // 输入
 
         audioBufferRequest = SFSpeechAudioBufferRecognitionRequest()
-
-        guard let recognitionRequest = audioBufferRequest else { fatalError("Unable to created a SFSpeechAudioBufferRecognitionRequest object") }
+        
+        guard let recognitionRequest = audioBufferRequest else { fatalError("Unable to created a SFSpeechAudioBufferRecognitionRequest object") } // 致命错误
        
         // 设置在音频录制完成之前返回结果
+        // 每产生一种结果就马上返回
         recognitionRequest.shouldReportPartialResults = true
         
         // 保留对该任务的引用，以便取消该任务。
         recognitionTask = recognizer?.recognitionTask(with: recognitionRequest, resultHandler: { (recognitionResult, error) in
             var isFinal = false
-            
             if let result = recognitionResult {
                 isFinal = result.isFinal
                 if isFinal {
-                    let string = result.bestTranscription.formattedString
+                    let string = result.bestTranscription.formattedString  // 语音转换后的信息类
                     self.appendString(string, contentType: .Mine)
                     self.requestTuringRot(string: string)
                 }
@@ -329,11 +328,14 @@ extension SpeechViewController: SFSpeechRecognizerDelegate {
             }
         })
         
+    
+        // 数字音频采样的格式
         let recordingFormat = inputNode.outputFormat(forBus: 0)
         //在添加tap之前先移除上一个 否则可能报"*** Terminating app due to uncaught exception 'com.apple.coreaudio.avfaudio', reason: 'required condition is false: nullptr == Tap()"之类的错误
         inputNode .removeTap(onBus: 0)
+        // bufferSize:传入缓冲区的请求大小
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { [weak self] (buffer:AVAudioPCMBuffer, when: AVAudioTime) in
-            self?.audioBufferRequest?.append(buffer)
+            self?.audioBufferRequest?.append(buffer) // 拼接 PCM格式的音频
         }
         
         if audioEngine.isRunning {
@@ -357,7 +359,6 @@ extension SpeechViewController: SFSpeechRecognizerDelegate {
             self.speakBtn.isEnabled = false
         }
     }
-    
 }
 
 extension SpeechViewController: AVSpeechSynthesizerDelegate {
