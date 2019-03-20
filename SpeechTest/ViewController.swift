@@ -9,29 +9,24 @@
 import UIKit
 import Speech
 
+
+/// 识别音频文件
+
 class ViewController: UIViewController ,SFSpeechRecognizerDelegate {
 
     
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var recognizeBtn: UIButton!
 
-    
-    private let recognizer = SFSpeechRecognizer.init(locale: Locale.init(identifier: "zh-CN"))
-    private var audioBufferRequest : SFSpeechAudioBufferRecognitionRequest?
-    private var recognitionTask : SFSpeechRecognitionTask?
-
-    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        recognizer?.delegate = self
+        
         requestAuthorization()
     }
-    
     
     func recognizeFile(url:NSURL) {
         

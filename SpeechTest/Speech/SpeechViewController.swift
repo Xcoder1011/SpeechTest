@@ -14,8 +14,7 @@ import AVFoundation
 struct Key {
     struct Turing {
         static let api = "http://openapi.tuling123.com/openapi/api/v2"
-        // static let apiKey = "480ffd93a93441aba6f66f029287a314" // 图灵
-        static let apiKey = "6cc5357b84ce5bf24a784370fb491557"
+        static let apiKey = "480ffd93a93441aba6f66f029287a314" // 图灵
     }
 }
 
@@ -39,13 +38,11 @@ class SpeechViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     lazy var dataArray = NSMutableArray()
-
     // 创建与指定区域设置关联的语音识别器。 , zh-CN，en-US
     private let recognizer = SFSpeechRecognizer.init(locale: Locale.init(identifier: "zh-CN"))
     private let audioEngine = AVAudioEngine()  // 音频引擎，用于音频输入
     private var audioBufferRequest : SFSpeechAudioBufferRecognitionRequest? // 语音识别的请求
-    private var recognitionTask : SFSpeechRecognitionTask?  // 语音识别的task
-
+    private var recognitionTask : SFSpeechRecognitionTask?  // 语音识别的任务类
     /// 语音合成器
     lazy private var speechSynthesizer: AVSpeechSynthesizer = {
         let synthesizer = AVSpeechSynthesizer()
@@ -57,15 +54,24 @@ class SpeechViewController: UIViewController {
         super.viewDidLoad()
         tableView.estimatedRowHeight = 80
         tableView.rowHeight = UITableViewAutomaticDimension
-
-        // print("SFSpeechRecognizer.supportedLocales() = \(SFSpeechRecognizer.supportedLocales())")
         for value in SFSpeechRecognizer.supportedLocales() {
             print(value.description)
         }
         self.speakBtn.isEnabled = false
-        //  监控语音识别服务的可用性
-        // recognizer?.defaultTaskHint =
-     
+        // 表示所请求的语音识别的类型
+        recognizer?.defaultTaskHint = .unspecified
+        /*
+        public enum SFSpeechRecognitionTaskHint : Int {
+            
+            case unspecified // 未指定识别
+            
+            case dictation // 案例听写//一般听写/键盘风格
+        
+            case search // 案例搜索//搜索样式请求
+            
+            case confirmation // 案例确认//简短，确认样式请求（“是”、“否”、“可能”）
+        }
+         */
         tableView.reloadData()
     }
     
@@ -76,19 +82,23 @@ class SpeechViewController: UIViewController {
     }
     
     @objc func openSettings() {
-        
         let alert = UIAlertController.init(title: "提示", message: "去打开语音识别权限？", preferredStyle: .alert)
         let cancelAction = UIAlertAction.init(title: "取消", style: .cancel, handler: nil)
         let openAction = UIAlertAction.init(title: "去打开", style: .default) { (action) in
-            
             let url = URL(string: UIApplicationOpenSettingsURLString)
             UIApplication.shared.open(url!, options: [:], completionHandler: nil)
         }
-        
         alert.addAction(cancelAction)
         alert.addAction(openAction)
         alert.show(self, sender: nil)
         present(alert, animated: true, completion: nil)
+    }
+    
+    func openUrl(string: String) {
+        let url = URL(string: string)
+        if UIApplication.shared.canOpenURL(url!) {
+            UIApplication.shared.open(url!, options: [:], completionHandler: nil)
+        }
     }
     
     func requestTuringRot(string: String) {
@@ -108,11 +118,32 @@ class SpeechViewController: UIViewController {
         let task = session.dataTask(with: request) { (data, response, error) in
             
             let dataResult = JSON(data as Any)
-            // print("dic = \(dataResult)")
-            if let text = dataResult["results"][0]["values"]["text"].string {
-                print("text = \(text)" )
-                self.appendString(text, contentType: .Your)
+            
+            if let results = dataResult["results"].array {
+                
+                for dic in results {
+                    
+                    if let resultType = dic["resultType"].string {
+                        
+                        if resultType == "text" {
+                            
+                            let text = dic["values"]["text"].string
+                            
+                            print("text = \(text!)" )
+                            
+                            self.appendString(text!, contentType: .Your)
+                            
+                        } else if resultType == "url" {
+                            
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 4, execute: {
+                                
+                                self.openUrl(string:  dic["values"]["url"].string!)
+                            })
+                        }
+                    }
+                }
             }
+
         }
         task.resume()
         
@@ -201,7 +232,6 @@ class SpeechViewController: UIViewController {
         }
     }
     
-    
     /// speak按钮点击
     @IBAction func speakBtnClicked(_ sender: UIButton) {
         
@@ -275,23 +305,20 @@ extension SpeechViewController: SFSpeechRecognizerDelegate,SFSpeechRecognitionTa
     
     func startRecording() throws {
     
-    
         if let recognitionTask = recognitionTask {
             recognitionTask.cancel()
             self.recognitionTask = nil
         }
-        
        
-        guard (recognizer?.isAvailable)! else {
-            fatalError("recognizer is not available")
-        }
+//        guard (recognizer?.isAvailable)! else {
+//            fatalError("recognizer is not available")
+//        }
       
         // do - catch
 
         let audioSession = AVAudioSession.sharedInstance() // 管理音频硬件资源的分配
         try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord) // AVAudioSessionCategoryRecord
         try audioSession.setMode(AVAudioSessionModeMeasurement) // 场景： 最小系统 、VoIP、 游戏录制、录制视频、视频播放、视频通话
-        try audioSession.setCategory(AVAudioSessionCategoryPlayback, with: .mixWithOthers)
         try audioSession.setActive(true, with: .notifyOthersOnDeactivation)
         
         // inputNode、outputNode分别对应硬件的麦克风和扬声器
@@ -304,41 +331,60 @@ extension SpeechViewController: SFSpeechRecognizerDelegate,SFSpeechRecognitionTa
         // 设置在音频录制完成之前返回结果
         // 每产生一种结果就马上返回
         recognitionRequest.shouldReportPartialResults = true
-        recognitionRequest.interactionIdentifier = "向左转弯"
-        
-        
+        // 标识符字符串。
+        // 识别请求: 可用于由开发人员识别接收者的字符串
+        recognitionRequest.interactionIdentifier = "myaudiorequest"
+       
         // 保留对该任务的引用，以便取消该任务。
-//        recognitionTask = recognizer?.recognitionTask(with: recognitionRequest, resultHandler: { (recognitionResult, error) in
-//            var isFinal = false
-//            if let result = recognitionResult {
-//                isFinal = result.isFinal
-//                if isFinal {
-//                    let string = result.bestTranscription.formattedString  // 语音转换后的信息类
-//                    self.appendString(string, contentType: .Mine)
-//                    self.requestTuringRot(string: string)
-//                }
-//            }
-//
-//            if error != nil || isFinal {
-//                self.audioEngine.stop()
-//                inputNode.removeTap(onBus: 0)
-//
-//                self.audioBufferRequest = nil
-//                self.recognitionTask = nil
-//
-//                self.speakBtn.isSelected = false
-//            }
-//        })
+        recognitionTask = recognizer?.recognitionTask(with: recognitionRequest, resultHandler: { (recognitionResult, error) in
+            var isFinal = false
+            if let result = recognitionResult {
+                isFinal = result.isFinal
+                
+                print(">>>>>>>>>>>>>:\(result.bestTranscription.formattedString)")
+                
+                if isFinal {
+                    
+                    let string = result.bestTranscription.formattedString  // 语音转换后的信息类
+                    
+                    for transcriptionSegment in result.bestTranscription.segments {
+                        
+                        print("substring =  \(transcriptionSegment.substring)")
+                    }
+                    
+                    self.appendString(string, contentType: .Mine)
+                    
+                    if string.contains("微信") {
+                        
+                        self.openUrl(string: "weixin://")
+                    }
+                    
+                    self.requestTuringRot(string: string)
+                }
+            }
+
+            if error != nil || isFinal {
+                self.audioEngine.stop()
+                inputNode.removeTap(onBus: 0)
+
+                self.audioBufferRequest = nil
+                self.recognitionTask = nil
+
+                self.speakBtn.isSelected = false
+            }
+        })
         
-      recognitionTask = recognizer?.recognitionTask(with: recognitionRequest, delegate: self)
+        // recognitionTask = recognizer?.recognitionTask(with: recognitionRequest, delegate: self)
     
         // 数字音频采样的格式
         let recordingFormat = inputNode.outputFormat(forBus: 0)
         //在添加tap之前先移除上一个 否则可能报"*** Terminating app due to uncaught exception 'com.apple.coreaudio.avfaudio', reason: 'required condition is false: nullptr == Tap()"之类的错误
         inputNode .removeTap(onBus: 0)
         // bufferSize:传入缓冲区的请求大小
+        // 创建一个“tap”来记录/监视/观察节点的输出
+        // bus：连接tap的节点输出总线
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { [weak self] (buffer:AVAudioPCMBuffer, when: AVAudioTime) in
-            self?.audioBufferRequest?.append(buffer) // 拼接 PCM格式的音频
+            self?.audioBufferRequest?.append(buffer) // 拼接 音频缓冲数据
         }
         
         if audioEngine.isRunning {
@@ -347,17 +393,14 @@ extension SpeechViewController: SFSpeechRecognizerDelegate,SFSpeechRecognitionTa
         }
         
         audioEngine.prepare()
-        
         try audioEngine.start()
-      
     }
     
     // MARK: SFSpeechRecognizerDelegate
     
     // 监控语音识别的可用性
     func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {
-        print("availabilityDidChange = \(available)")
-        if available { //available: 指示语音识别器当前是否可用。
+        if available {
             self.speakBtn.isEnabled = true
         } else {
             self.speakBtn.isEnabled = false
@@ -368,22 +411,20 @@ extension SpeechViewController: SFSpeechRecognizerDelegate,SFSpeechRecognitionTa
     
     // 当任务首次检测到源音频中的语音时
     func speechRecognitionDidDetectSpeech(_ task: SFSpeechRecognitionTask) {
-        
+       
         print("speechRecognitionDidDetectSpeech = \(task.description)")
-
     }
     
     // 告诉代理该任务已被取消。
     func speechRecognitionTaskWasCancelled(_ task: SFSpeechRecognitionTask) {
-        
+       
         print("speechRecognitionTaskWasCancelled = \(task.description)")
-        
     }
     
     // 当任务不再接受新的音频输入时，即使最终处理正在进行，也告诉代理
     func speechRecognitionTaskFinishedReadingAudio(_ task: SFSpeechRecognitionTask) {
+        
         print("speechRecognitionTaskFinishedReadingAudio = \(task.description)")
-
     }
     
     // 完成对所有请求的话语的识别。
@@ -449,8 +490,8 @@ extension SpeechViewController: AVSpeechSynthesizerDelegate {
     
     // 监听 播放 字符范围
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, willSpeakRangeOfSpeechString characterRange: NSRange, utterance: AVSpeechUtterance) {
-        let str = (utterance.speechString as NSString).substring(with: characterRange)
-        print(str)
+        // let str = (utterance.speechString as NSString).substring(with: characterRange)
+        // print(str)
     }
 }
 
